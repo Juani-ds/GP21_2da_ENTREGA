@@ -4,7 +4,10 @@ import modelos.Materia;
 import persistencia.MateriaData;
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ *
+ * @author  Nahuel Guerra
+ */
 public class TestMaterias {
 
     public static void main(String[] args) {

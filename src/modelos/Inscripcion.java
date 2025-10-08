@@ -1,5 +1,8 @@
 package modelos;
-
+/**
+ *
+ * @author  Nahuel Guerra
+ */
 public class Inscripcion {
     private int idInscripto;
     private Integer nota;
