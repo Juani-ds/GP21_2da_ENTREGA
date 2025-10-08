@@ -193,7 +193,7 @@ public class TestAlumnos {
                 "Tiziana",
                 "Pastrana",
                 34567890,
-                LocalDate.of(1999, 3, 10)
+                LocalDate.of(2003, 7, 19)
         );
         System.out.println("Integrante 3: " + resultado3);
 
