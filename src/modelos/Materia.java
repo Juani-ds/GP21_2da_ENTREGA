@@ -11,5 +11,64 @@ package modelos;
  * @author  Alaina Reyes
  */
 public class Materia {
+ private int idMateria;
+    private String nombreMateria;
+    private int anio;
+    private boolean estado;
 
+    // Constructor vacío
+    public Materia() {}
+
+    // Constructor completo
+    public Materia(int idMateria, String nombreMateria, int anio, boolean estado) {
+        this.idMateria = idMateria;
+        this.nombreMateria = nombreMateria;
+        this.anio = anio;
+        this.estado = estado;
+    }
+
+    // Constructor sin ID (para inserciones)
+    public Materia(String nombreMateria, int anio, boolean estado) {
+        this.nombreMateria = nombreMateria;
+        this.anio = anio;
+        this.estado = estado;
+    }
+
+    // Getters y Setters
+    public int getIdMateria() {
+        return idMateria;
+    }
+
+    public void setIdMateria(int idMateria) {
+        this.idMateria = idMateria;
+    }
+
+    public String getNombreMateria() {
+        return nombreMateria;
+    }
+
+    public void setNombreMateria(String nombreMateria) {
+        this.nombreMateria = nombreMateria;
+    }
+
+    public int getAnio() {
+        return anio;
+    }
+
+    public void setAnio(int anio) {
+        this.anio = anio;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    @Override
+    public String toString() {
+        return nombreMateria + " (" + anio + "° año)";
+    }
 }
