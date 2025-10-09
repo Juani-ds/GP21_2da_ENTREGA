@@ -183,8 +183,8 @@ public class TestAlumnos {
         String resultado2 = alumnoController.guardarAlumno(
                 "Alaina Sabrina",
                 "Reyes Fernandez",
-                23456789,
-                LocalDate.of(2001, 8, 20)
+                40842306,
+                LocalDate.of(1997, 12, 13)
         );
         System.out.println("Integrante 2: " + resultado2);
 
