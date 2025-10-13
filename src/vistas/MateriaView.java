@@ -9,7 +9,7 @@ package vistas;
  *
  * @author MSI
  */
-public class MateriaView extends javax.swing.JFrame {
+public class MateriaView extends javax.swing.JInternalFrame {
 
     
     public MateriaView() {
