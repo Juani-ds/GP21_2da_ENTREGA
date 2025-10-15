@@ -28,12 +28,13 @@ public class InscripcionView extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
+        buttonGroupIscrito = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButtonInscripto = new javax.swing.JRadioButton();
+        jRadioButtonNoInscripto = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
@@ -41,6 +42,9 @@ public class InscripcionView extends javax.swing.JInternalFrame {
         jButton3 = new javax.swing.JButton();
 
         jMenuItem1.setText("jMenuItem1");
+
+        buttonGroupIscrito.add(jRadioButtonInscripto);
+        buttonGroupIscrito.add(jRadioButtonNoInscripto);
 
         jLabel1.setText("FORMULARIO DE INSCRIPCION");
 
@@ -50,14 +54,14 @@ public class InscripcionView extends javax.swing.JInternalFrame {
 
         jLabel3.setText("LISTADO DE MATERIAS");
 
-        jRadioButton1.setText("Materia inscriptas");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        jRadioButtonInscripto.setText("Materia inscriptas");
+        jRadioButtonInscripto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                jRadioButtonInscriptoActionPerformed(evt);
             }
         });
 
-        jRadioButton2.setText("Materia no inscriptas");
+        jRadioButtonNoInscripto.setText("Materia no inscriptas");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,9 +103,9 @@ public class InscripcionView extends javax.swing.JInternalFrame {
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jRadioButton1)
+                                .addComponent(jRadioButtonInscripto)
                                 .addGap(39, 39, 39)
-                                .addComponent(jRadioButton2))
+                                .addComponent(jRadioButtonNoInscripto))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -132,8 +136,8 @@ public class InscripcionView extends javax.swing.JInternalFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(jRadioButtonInscripto)
+                    .addComponent(jRadioButtonNoInscripto))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
@@ -147,9 +151,9 @@ public class InscripcionView extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    private void jRadioButtonInscriptoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonInscriptoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    }//GEN-LAST:event_jRadioButtonInscriptoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -157,6 +161,7 @@ public class InscripcionView extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroupIscrito;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -165,8 +170,8 @@ public class InscripcionView extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButtonInscripto;
+    private javax.swing.JRadioButton jRadioButtonNoInscripto;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
