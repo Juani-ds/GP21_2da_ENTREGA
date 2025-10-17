@@ -59,7 +59,7 @@ public class Ventana extends javax.swing.JFrame {
         jMenu1.setText("Archivo");
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Ver");
+        jMenu2.setText("Ver/Agregar");
 
         jViewMateria.setText("Materias");
         jViewMateria.addActionListener(new java.awt.event.ActionListener() {
