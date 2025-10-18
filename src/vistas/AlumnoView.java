@@ -23,6 +23,40 @@ public class AlumnoView extends javax.swing.JInternalFrame {
      */
     public AlumnoView() {
         initComponents();
+        
+        textID.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = textID.getText().trim();
+
+                if (!texto.isEmpty()) {
+                    try {
+                        int id = Integer.parseInt(texto);
+
+                        AlumnoData alumnoData = new AlumnoData();
+                        Alumno alumno = alumnoData.buscarAlumnoPorId(id);
+
+                        if (alumno != null) {
+                            jTextNombre.setText(alumno.getNombre());
+                            jTextApellido.setText(alumno.getApellido());
+                            jTextDni.setText(String.valueOf(alumno.getDni()));
+                            jDateNacimiento.setDate(java.sql.Date.valueOf(alumno.getFechaNacimiento()));
+                            jRButtonEstado.setSelected(alumno.isEstado());
+                        } else {
+                            // Si el ID no existe, limpia los campos
+                            limpiarCampos();
+                        }
+
+                    } catch (NumberFormatException ex) {
+                        // Si el texto no es un número válido, limpia los campos
+                        limpiarCampos();
+                    }
+                } else {
+                    // Si el campo de ID queda vacío, limpia los campos
+                    limpiarCampos();
+                }
+        }
+    });
     }
 
     /**
@@ -115,6 +149,11 @@ public class AlumnoView extends javax.swing.JInternalFrame {
         });
 
         jButtonBorrar.setText("Borrar");
+        jButtonBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrarActionPerformed(evt);
+            }
+        });
 
         jButtonAct.setText("Actualizar");
         jButtonAct.addActionListener(new java.awt.event.ActionListener() {
@@ -278,7 +317,10 @@ public class AlumnoView extends javax.swing.JInternalFrame {
     private void textIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textIDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textIDActionPerformed
-
+    
+    
+    
+    
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
         // Obtengo los primeros datos. trim() elimina los espacios que podría poner el usuario por error.
         try{
@@ -293,6 +335,23 @@ public class AlumnoView extends javax.swing.JInternalFrame {
                 return;
             }
             
+            
+            //Ahora comprobaremos que en el nombre haya solo letras o espacios con el método matches que evalúa el string devolviendo true si hay coincidencia. 
+            //El \\p{L} es una expresión regular que permite valores del alfabeto latino, cirílico, etc.
+            //Podría usarse de expresión regular [a-zA-ZáéíóúÁÉÍÓÚñÑ '\\-]+ que tomaría todas las letras del español y los espacios.
+            //El ^ y $ indican que toda la cadena completa debe cumplir con la Regex. 
+            if(!nombre.matches("^[\\p{L} ]+$")){
+                JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras");
+                return;
+            }
+            
+            //Aquí son las mismas anotaciones que en nombre. 
+            if(!apellido.matches("^[\\p{L} ]+$")){
+                JOptionPane.showMessageDialog(this, "El Apellido Solo puede contener letras");
+                return;
+            }
+            
+            //Se usa la regex \\d+ que significa que significa que puede contener números por \d y el + indica que tiene que tener 1 o más dígitos. 
             if(!dnistr.matches("\\d+")){
                 JOptionPane.showMessageDialog(this, "El DNI solo puede contener números");
                 return;
@@ -355,6 +414,11 @@ public class AlumnoView extends javax.swing.JInternalFrame {
     private void jRadioButtonMascActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMascActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButtonMascActionPerformed
+
+    private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jButtonBorrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
