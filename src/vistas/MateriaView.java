@@ -5,16 +5,86 @@
  */
 package vistas;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.swing.table.DefaultTableModel;
+import modelos.Materia;
+import persistencia.MateriaData;
+
 /**
  *
  * @author MSI
  */
 public class MateriaView extends javax.swing.JInternalFrame {
+    
+    private MateriaData materiaData = new MateriaData();
+    private List<Materia> listaMaterias;
 
+    
     
     public MateriaView() {
         initComponents();
+        cargarMateriasEnTabla();
+        cargarAniosEnComboBox();
+        configurarEventoTabla();
+        
     }
+    
+    private void configurarTabla() {
+        jTableMaterias.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {"ID", "Nombre", "Año", "Activa"}
+        ) {
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+        });
+    }
+    
+    private void cargarMateriasEnTabla() {
+        listaMaterias = materiaData.listarMaterias();
+        DefaultTableModel modelo = (DefaultTableModel) jTableMaterias.getModel();
+        modelo.setRowCount(0);
+
+        for (Materia m : listaMaterias) {
+            modelo.addRow(new Object[]{
+                m.getIdMateria(),
+                m.getNombreMateria(),
+                m.getAnio(),
+                m.isEstado()? "Sí" : "No"
+            });
+        }
+    }
+    
+    private void cargarAniosEnComboBox() {
+        List<Materia> materias = materiaData.listarMaterias();
+        Set<Integer> anios = new HashSet<>();
+
+        for (Materia m : materias) {
+        anios.add(m.getAnio());
+        }
+    }
+        
+        private void configurarEventoTabla() {
+            jTableMaterias.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int filaSeleccionada = jTableMaterias.getSelectedRow();
+                    if (filaSeleccionada != -1) {
+                        int idMateria = (int) jTableMaterias.getValueAt(filaSeleccionada, 0);
+                        Materia materia = materiaData.buscarMateriaPorId(idMateria);
+
+                        jTextNombre.setText(materia.getNombreMateria());
+                        jComboBoxAnio.setSelectedItem(materia.getAnio());
+                        jCheckBoxActivo.setSelected(materia.isEstado());
+                    }
+                }
+        });
+    
+
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,17 +102,17 @@ public class MateriaView extends javax.swing.JInternalFrame {
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextNombre = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxAnio = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        jCheckBoxActivo = new javax.swing.JRadioButton();
         btnModificar = new javax.swing.JButton();
         BtnRegistrar = new javax.swing.JButton();
         BtnEliminar = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTableMaterias = new javax.swing.JTable();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -65,26 +135,26 @@ public class MateriaView extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Nombre:");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jTextNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jTextNombreActionPerformed(evt);
             }
         });
 
         jLabel3.setText("Año:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxAnio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5" }));
+        jComboBoxAnio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                jComboBoxAnioActionPerformed(evt);
             }
         });
 
         jLabel4.setText("Activa:");
 
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBoxActivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                jCheckBoxActivoActionPerformed(evt);
             }
         });
 
@@ -96,18 +166,21 @@ public class MateriaView extends javax.swing.JInternalFrame {
 
         jButton3.setText("Eliminar");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTableMaterias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Materia", "Año"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(jTableMaterias);
 
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
@@ -138,18 +211,17 @@ public class MateriaView extends javax.swing.JInternalFrame {
                                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                                                .addGap(22, 22, 22)
-                                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(jCheckBoxActivo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                                 .addGap(3, 3, 3)
-                                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jComboBoxAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jTextNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                         .addGap(38, 38, 38)
                                         .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(123, 123, 123)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(32, 32, 32)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -162,18 +234,18 @@ public class MateriaView extends javax.swing.JInternalFrame {
                         .addGap(24, 24, 24)
                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBoxAnio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(23, 23, 23))
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                                .addComponent(jRadioButton1)
+                                .addComponent(jCheckBoxActivo)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addComponent(btnModificar)
                         .addGap(27, 27, 27))
@@ -216,17 +288,17 @@ public class MateriaView extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jTextNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jTextNombreActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void jComboBoxAnioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxAnioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_jComboBoxAnioActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    private void jCheckBoxActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxActivoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    }//GEN-LAST:event_jCheckBoxActivoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -268,7 +340,8 @@ public class MateriaView extends javax.swing.JInternalFrame {
     private javax.swing.JButton BtnRegistrar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JRadioButton jCheckBoxActivo;
+    private javax.swing.JComboBox<String> jComboBoxAnio;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -276,11 +349,16 @@ public class MateriaView extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable jTableMaterias;
+    private javax.swing.JTextField jTextNombre;
     // End of variables declaration//GEN-END:variables
+
+
+    
+    
+
+
 }

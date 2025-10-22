@@ -21,8 +21,11 @@ public class AlumnoView extends javax.swing.JInternalFrame {
     /**
      * Creates new form AlumnoView
      */
+    private AlumnoData alumnoData;
     public AlumnoView() {
         initComponents();
+        
+        AlumnoData alumnoData = new AlumnoData();
         
         textID.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -33,7 +36,7 @@ public class AlumnoView extends javax.swing.JInternalFrame {
                     try {
                         int id = Integer.parseInt(texto);
 
-                        AlumnoData alumnoData = new AlumnoData();
+
                         Alumno alumno = alumnoData.buscarAlumnoPorId(id);
 
                         if (alumno != null) {
@@ -333,7 +336,7 @@ public class AlumnoView extends javax.swing.JInternalFrame {
             
             Alumno alumno = new Alumno(nombre, apellido, dni, fechaNacimiento, estado);
             
-            AlumnoData alumnoData = new AlumnoData();
+            
             alumnoData.insertarAlumno(alumno);
             
             JOptionPane.showMessageDialog(this, "Alumno guardado correctamente con ID: " + alumno.getIdAlumno());
@@ -420,7 +423,7 @@ public class AlumnoView extends javax.swing.JInternalFrame {
             
             Alumno alumno = new Alumno(id, nombre, apellido, dni, fechaNacimiento, estado);
             
-            AlumnoData alumnoData = new AlumnoData();
+
             alumnoData.actualizarAlumno(alumno);
             
             JOptionPane.showMessageDialog(this, "Alumno Actualizado correctamente");
@@ -451,7 +454,6 @@ public class AlumnoView extends javax.swing.JInternalFrame {
                     "Confirmar eliminación",
                     JOptionPane.YES_NO_OPTION);
             if(opcion == JOptionPane.YES_OPTION){
-                AlumnoData alumnoData = new AlumnoData();
                 alumnoData.eliminarAlumno(id);
                 limpiarCampos();
                 JOptionPane.showMessageDialog(this, "Alumno Eliminado correctamente");
