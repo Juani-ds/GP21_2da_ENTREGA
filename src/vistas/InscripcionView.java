@@ -50,8 +50,6 @@ public class InscripcionView extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Seleccione un Alumno:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel3.setText("LISTADO DE MATERIAS");
 
         jRadioButtonInscripto.setText("Materia inscriptas");
@@ -65,13 +63,13 @@ public class InscripcionView extends javax.swing.JInternalFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null},
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Materias"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
