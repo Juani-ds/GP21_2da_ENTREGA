@@ -5,17 +5,114 @@
  */
 package vistas;
 
+import java.util.List;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author MSI
  */
 public class CargarNotasWiew extends javax.swing.JInternalFrame {
 
+    private persistencia.AlumnoData alumnoData;
+    private persistencia.InscripcionData inscripcionData;
+    private List<modelos.Alumno> listaAlumnos;
+    private List<modelos.Inscripcion> inscripcionesDelAlumno;
     /**
      * Creates new form CargarNotasWiew
      */
     public CargarNotasWiew() {
         initComponents();
+        alumnoData = new persistencia.AlumnoData();
+        inscripcionData = new persistencia.InscripcionData();
+        configurarTabla();
+        jTextField1.setText("");
+        cargarAlumnos();
+        configurarEventoTabla();
+    }
+    
+    private void configurarTabla() {
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {"ID Inscripción", "Materia", "Año", "Nota"}
+        ) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+    }
+    
+    private void cargarAlumnos() {
+        try {
+            ComboSelectAlumno.removeAllItems();
+            List<modelos.Alumno> todosLosAlumnos = alumnoData.listarAlumnosActivos();
+            listaAlumnos = new java.util.ArrayList<>();
+            for (modelos.Alumno alumno : todosLosAlumnos) {
+                List<modelos.Inscripcion> inscripciones = inscripcionData.listarInscripcionesPorAlumno(alumno.getIdAlumno());
+                if (!inscripciones.isEmpty()) {
+                    listaAlumnos.add(alumno);
+                    ComboSelectAlumno.addItem(alumno.toString());
+                }
+            }
+            if (listaAlumnos.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No hay alumnos con inscripciones activas");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar alumnos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void cargarInscripcionesDelAlumno() {
+        try {
+            int indexAlumno = ComboSelectAlumno.getSelectedIndex();
+            if (indexAlumno == -1) {
+                return;
+            }
+            modelos.Alumno alumnoSeleccionado = listaAlumnos.get(indexAlumno);
+            inscripcionesDelAlumno = inscripcionData.listarInscripcionesPorAlumno(alumnoSeleccionado.getIdAlumno());
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+            modelo.setRowCount(0);
+            if (inscripcionesDelAlumno.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "El alumno no tiene inscripciones");
+                return;
+            }
+            
+            for (modelos.Inscripcion insc : inscripcionesDelAlumno) {
+                String notaStr = insc.getNota() != null ? String.valueOf(insc.getNota()) : "Sin nota";
+
+                modelo.addRow(new Object[]{
+                    insc.getIdInscripto(),
+                    insc.getMateria().getNombreMateria(),
+                    insc.getMateria().getAnio(),
+                    notaStr
+                });
+            }
+            jTextField1.setText("");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al cargar materias del alumno: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void configurarEventoTabla() {
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int filaSeleccionada = jTable1.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    String notaStr = (String) jTable1.getValueAt(filaSeleccionada, 3);
+                    if (!notaStr.equals("Sin nota")) {
+                        jTextField1.setText(notaStr);
+                    } else {
+                        jTextField1.setText("");
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -29,19 +126,19 @@ public class CargarNotasWiew extends javax.swing.JInternalFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        ComboSelectAlumno = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        BtnGuardar = new javax.swing.JButton();
 
         jLabel1.setText("CARGA DE NOTAS");
 
         jLabel2.setText("Seleccione un alumno:");
 
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        ComboSelectAlumno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                ComboSelectAlumnoActionPerformed(evt);
             }
         });
 
@@ -60,7 +157,12 @@ public class CargarNotasWiew extends javax.swing.JInternalFrame {
 
         jTextField1.setText("Ingrese la nota");
 
-        jButton1.setText("Guardar");
+        BtnGuardar.setText("Guardar");
+        BtnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnGuardarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -72,12 +174,12 @@ public class CargarNotasWiew extends javax.swing.JInternalFrame {
                         .addGap(33, 33, 33)
                         .addComponent(jLabel2)
                         .addGap(33, 33, 33)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(ComboSelectAlumno, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(58, 58, 58)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
-                        .addComponent(jButton1)))
+                        .addComponent(BtnGuardar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -96,27 +198,79 @@ public class CargarNotasWiew extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ComboSelectAlumno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(BtnGuardar))
                 .addGap(0, 41, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void ComboSelectAlumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboSelectAlumnoActionPerformed
+        cargarInscripcionesDelAlumno();
+    }//GEN-LAST:event_ComboSelectAlumnoActionPerformed
+
+    private void BtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGuardarActionPerformed
+        try {
+            int indexAlumno = ComboSelectAlumno.getSelectedIndex();
+            if (indexAlumno == -1) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un alumno");
+                return;
+            }
+            int filaSeleccionada = jTable1.getSelectedRow();
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, 
+                    "Debe seleccionar una materia de la tabla");
+                return;
+            }
+            String notaStr = jTextField1.getText().trim();
+            if (notaStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar una nota");
+                return;
+            }
+            if (!notaStr.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, 
+                    "La nota debe ser un número entero");
+                return;
+            }
+            int nota = Integer.parseInt(notaStr);
+            if (nota < 0 || nota > 10) {
+                JOptionPane.showMessageDialog(this, 
+                    "La nota debe estar entre 0 y 10");
+                return;
+            }
+            
+            int idInscripcion = (int) jTable1.getValueAt(filaSeleccionada, 0);
+            String nombreMateria = (String) jTable1.getValueAt(filaSeleccionada, 1);
+            int opcion = JOptionPane.showConfirmDialog(this, "¿Desea guardar la nota " + nota + " para la materia '" + nombreMateria + "'?",
+                "Confirmar nota",
+                JOptionPane.YES_NO_OPTION);
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+            inscripcionData.actualizarNota(idInscripcion, nota);
+            JOptionPane.showMessageDialog(this, "Nota guardada correctamente");
+            cargarInscripcionesDelAlumno();
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error: La nota debe ser un número válido");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al guardar nota: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_BtnGuardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton BtnGuardar;
+    private javax.swing.JComboBox<String> ComboSelectAlumno;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;

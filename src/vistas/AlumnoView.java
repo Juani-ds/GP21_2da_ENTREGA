@@ -25,7 +25,7 @@ public class AlumnoView extends javax.swing.JInternalFrame {
     public AlumnoView() {
         initComponents();
         
-        AlumnoData alumnoData = new AlumnoData();
+        alumnoData = new AlumnoData();
         
         textID.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override

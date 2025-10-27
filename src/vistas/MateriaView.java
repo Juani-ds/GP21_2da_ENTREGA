@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelos.Materia;
 import persistencia.MateriaData;
@@ -21,7 +22,7 @@ public class MateriaView extends javax.swing.JInternalFrame {
     
     private MateriaData materiaData = new MateriaData();
     private List<Materia> listaMaterias;
-
+    private int idMateriaSeleccionada = -1;
     
     
     public MateriaView() {
@@ -69,20 +70,20 @@ public class MateriaView extends javax.swing.JInternalFrame {
         
         private void configurarEventoTabla() {
             jTableMaterias.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    int filaSeleccionada = jTableMaterias.getSelectedRow();
-                    if (filaSeleccionada != -1) {
-                        int idMateria = (int) jTableMaterias.getValueAt(filaSeleccionada, 0);
-                        Materia materia = materiaData.buscarMateriaPorId(idMateria);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int filaSeleccionada = jTableMaterias.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    idMateriaSeleccionada = (int) jTableMaterias.getValueAt(filaSeleccionada, 0);  // Guardar ID
+                    Materia materia = materiaData.buscarMateriaPorId(idMateriaSeleccionada);
 
+                    if (materia != null) {
                         jTextNombre.setText(materia.getNombreMateria());
-                        jComboBoxAnio.setSelectedItem(materia.getAnio());
+                        jComboBoxAnio.setSelectedItem(String.valueOf(materia.getAnio()));
                         jCheckBoxActivo.setSelected(materia.isEstado());
                     }
                 }
+            }
         });
-    
-
     }
     
 
@@ -109,8 +110,8 @@ public class MateriaView extends javax.swing.JInternalFrame {
         jCheckBoxActivo = new javax.swing.JRadioButton();
         btnModificar = new javax.swing.JButton();
         BtnRegistrar = new javax.swing.JButton();
+        BtnBuscar = new javax.swing.JButton();
         BtnEliminar = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableMaterias = new javax.swing.JTable();
 
@@ -159,12 +160,32 @@ public class MateriaView extends javax.swing.JInternalFrame {
         });
 
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         BtnRegistrar.setText("Registrar");
+        BtnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRegistrarActionPerformed(evt);
+            }
+        });
 
-        BtnEliminar.setText("Buscar");
+        BtnBuscar.setText("Buscar");
+        BtnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnBuscarActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Eliminar");
+        BtnEliminar.setText("Eliminar");
+        BtnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnEliminarActionPerformed(evt);
+            }
+        });
 
         jTableMaterias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -192,9 +213,9 @@ public class MateriaView extends javax.swing.JInternalFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(BtnRegistrar)
                         .addGap(12, 12, 12)
-                        .addComponent(BtnEliminar)
+                        .addComponent(BtnBuscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3))
+                        .addComponent(BtnEliminar))
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
@@ -255,8 +276,8 @@ public class MateriaView extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnRegistrar)
-                    .addComponent(BtnEliminar)
-                    .addComponent(jButton3))
+                    .addComponent(BtnBuscar)
+                    .addComponent(BtnEliminar))
                 .addGap(281, 281, 281))
         );
 
@@ -300,6 +321,127 @@ public class MateriaView extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxActivoActionPerformed
 
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        try {
+            if (idMateriaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar una materia de la tabla");
+                return;
+            }
+            String nombre = jTextNombre.getText().trim();
+
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar el nombre de la materia");
+                return;
+            }
+            if (!nombre.matches("^[\\p{L}0-9 ]+$")) {
+                JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras y números");
+                return;
+            }
+            
+            int anio = Integer.parseInt((String) jComboBoxAnio.getSelectedItem());
+            boolean estado = jCheckBoxActivo.isSelected();
+            Materia materiaActualizada = new Materia(idMateriaSeleccionada, nombre, anio, estado);
+            materiaData.actualizarMateria(materiaActualizada);
+            JOptionPane.showMessageDialog(this, "Materia actualizada correctamente");
+            cargarMateriasEnTabla();
+            limpiarCampos();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar materia: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void BtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrarActionPerformed
+        try {
+            String nombre = jTextNombre.getText().trim();
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar el nombre de la materia");
+                return;
+            }
+            if (!nombre.matches("^[\\p{L}0-9 ]+$")) {
+                JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras y números");
+                return;
+            }
+            
+            int anio = Integer.parseInt((String) jComboBoxAnio.getSelectedItem());
+            boolean estado = jCheckBoxActivo.isSelected();
+            Materia nuevaMateria = new Materia(nombre, anio, estado);
+            materiaData.insertarMateria(nuevaMateria);
+            JOptionPane.showMessageDialog(this, "Materia registrada correctamente con ID: " + nuevaMateria.getIdMateria());
+            cargarMateriasEnTabla();
+            limpiarCampos();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al registrar materia: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_BtnRegistrarActionPerformed
+
+    private void BtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEliminarActionPerformed
+        try {
+            if (idMateriaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar una materia de la tabla");
+                return;
+            }
+            Materia materia = materiaData.buscarMateriaPorId(idMateriaSeleccionada);
+            if (materia == null) {
+                JOptionPane.showMessageDialog(this, "La materia seleccionada no existe");
+                return;
+            }
+
+            int opcion = JOptionPane.showConfirmDialog(this, 
+                "¿Está seguro que desea eliminar la materia '" + materia.getNombreMateria() + "'?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                materiaData.eliminarMateria(idMateriaSeleccionada);
+                JOptionPane.showMessageDialog(this, "Materia eliminada correctamente");
+                cargarMateriasEnTabla();
+                limpiarCampos();
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar materia: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_BtnEliminarActionPerformed
+
+    private void BtnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarActionPerformed
+       try {
+            String idStr = JOptionPane.showInputDialog(this, 
+                "Ingrese el ID de la materia a buscar:", 
+                "Buscar Materia", 
+                JOptionPane.QUESTION_MESSAGE);
+            if (idStr == null || idStr.trim().isEmpty()) {
+                return; 
+            }
+            if (!idStr.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "El ID debe ser un número válido");
+                return;
+            }
+
+            int id = Integer.parseInt(idStr);
+            Materia materia = materiaData.buscarMateriaPorId(id);
+            if (materia != null) {
+                idMateriaSeleccionada = materia.getIdMateria();
+                jTextNombre.setText(materia.getNombreMateria());
+                jComboBoxAnio.setSelectedItem(String.valueOf(materia.getAnio()));
+                jCheckBoxActivo.setSelected(materia.isEstado());
+                JOptionPane.showMessageDialog(this, "Materia encontrada");
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró una materia con ID: " + id);
+                limpiarCampos();
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar materia: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_BtnBuscarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -336,10 +478,10 @@ public class MateriaView extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnBuscar;
     private javax.swing.JButton BtnEliminar;
     private javax.swing.JButton BtnRegistrar;
     private javax.swing.JButton btnModificar;
-    private javax.swing.JButton jButton3;
     private javax.swing.JRadioButton jCheckBoxActivo;
     private javax.swing.JComboBox<String> jComboBoxAnio;
     private javax.swing.JInternalFrame jInternalFrame1;
@@ -359,6 +501,12 @@ public class MateriaView extends javax.swing.JInternalFrame {
 
     
     
-
+private void limpiarCampos() {
+    idMateriaSeleccionada = -1;
+    jTextNombre.setText("");
+    jComboBoxAnio.setSelectedIndex(0);
+    jCheckBoxActivo.setSelected(false);
+    jTableMaterias.clearSelection();
+}
 
 }

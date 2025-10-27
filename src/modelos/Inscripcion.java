@@ -27,6 +27,10 @@ public class Inscripcion {
         this.materia = materia;
     }
 
+    public Inscripcion(Alumno alumno, Materia materia) {
+        this.alumno = alumno;
+        this.materia = materia;
+    }
     // Getters y Setters
     public int getIdInscripto() {
         return idInscripto;
